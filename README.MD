@@ -10,6 +10,12 @@ swift package init --type executable
 .build/debug/protobuf-server
 ```
 
+# Open project in XCode
+
+```bash
+swift package generate-xcodeproj
+```
+
 # Clone protobuf
 
 ```bash
@@ -34,3 +40,8 @@ brew install protobuf-swift
 sudo cp .build/debug/protoc-gen-swift /opt/local/bin
 ```
 
+# Generate protobuf Swift access classes
+
+```bash
+protoc --swift_out=. Schema.proto
+```

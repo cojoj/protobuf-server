@@ -1,16 +1,30 @@
 syntax = "proto3";
 
-message City {
+message Transaction {
     uint64 id = 1;
-    string name = 2;
-    double latitude = 3;
-    double longitude = 4;
-    uint32 population = 5;
+    enum TransactionType {
+        Credit = 0;
+        Debit = 1;
+    }
+    TransactionType transactionType = 2;
+    string transactionDate = 3;
+    string bookingDate = 4;
+    string principalDisposal = 5;
+    string orderingCustomer = 6;
+    string beneficiary = 7;
+    string beneficiaryAccount = 8;
+    string details = 9;
+    double amount = 10;
 }
 
-message Country {
+message Account {
     uint64 id = 1;
     string name = 2;
-    repeated City cities = 3;
-    uint64 population = 4;
+    double balance = 3;
+    double availableFunds = 4;
+    string iban = 5;
+    string currency = 6;
+    string owner = 7;
+    string ownerAddress = 8;
+    repeated Transaction transactions = 9;
 }

@@ -1,0 +1,18 @@
+GIT
+  remote: https://github.com/sevenwire/forgery.git
+  revision: 7e79af3ccf89aa7ee2185f09dcb6d25c838d3ef6
+  specs:
+    forgery (0.6.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  forgery!
+
+BUNDLED WITH
+   1.14.6

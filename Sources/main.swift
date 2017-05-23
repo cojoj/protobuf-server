@@ -8,13 +8,28 @@ HeliumLogger.use()
 // Create a new router
 let router = Router()
 
-//let countries = [
-//    Country(id: 1, name: "Poland", cities: [
-//        City(id: 1, name: "Warsaw", latitude: 52.2297, longitude: 21.0122, population: 2666278),
-//        City(id: 2, name: "Krakow", latitude: 50.0647, longitude: 19.9450, population: 760000),
-//        City(id: 3, name: "Poznań", latitude: 52.4064, longitude: 16.9252, population: 550000)
-//    ], population: 38567211)
-//];
+// Data
+var accounts: Array<Account> = [Account]()
+
+func loadDataFromFile() -> Void {
+    do {
+        let accountRows = try String(contentsOfFile: "/Users/michal/git/protobuf-server/Resources/accounts.csv").components(separatedBy: .newlines)
+        for accountRow in accountRows {
+            if accountRow == "" {
+                continue
+            }
+            let fields = accountRow.components(separatedBy: ";")
+            var account = Account(id: UInt64(fields[0]), name: fields[1], balance: Double(fields[2]), availableFunds: Double(fields[3]), iban: fields[4], currency: fields[5], owner: fields[6], ownerAddress: fields[7], transactions: [])
+            print(account)
+            account.transactions = []
+            accounts.append(account)
+        }
+    } catch {
+        print(error)
+    }
+}
+
+loadDataFromFile()
 
 // Handle HTTP GET requests to /
 router.get("/country") {

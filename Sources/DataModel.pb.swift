@@ -201,6 +201,32 @@ struct Account: SwiftProtobuf.Message {
   }
 }
 
+struct AccountList: SwiftProtobuf.Message {
+  static let protoMessageName: String = "AccountList"
+
+  var accounts: [Account] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeRepeatedMessageField(value: &self.accounts)
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.accounts.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.accounts, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 extension Transaction: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -263,6 +289,18 @@ extension Account: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._Prot
     if self.owner != other.owner {return false}
     if self.ownerAddress != other.ownerAddress {return false}
     if self.transactions != other.transactions {return false}
+    if unknownFields != other.unknownFields {return false}
+    return true
+  }
+}
+
+extension AccountList: SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "accounts"),
+  ]
+
+  func _protobuf_generated_isEqualTo(other: AccountList) -> Bool {
+    if self.accounts != other.accounts {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }

@@ -28,3 +28,7 @@ message Account {
     string ownerAddress = 8;
     repeated Transaction transactions = 9;
 }
+
+message AccountList {
+    repeated Account accounts = 1;
+}

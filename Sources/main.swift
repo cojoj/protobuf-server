@@ -9,12 +9,69 @@ HeliumLogger.use()
 let router = Router()
 
 // Load data from CSV files
-var accounts = DataLoadHelper.loadAccounts()
+let accountList = DataLoadHelper.loadAccountList()
+let accountDictionary = DataLoadHelper.mapAccounts(accountList: accountList)
 
 // Handle HTTP GET requests to /
-router.get("/accounts") {
+router.get("/accountList") {
     request, response, next in
-    response.send("Hello, World!")
+    
+    guard let acceptType = request.headers["Accept"] else {
+        let accountListJSON = try accountList.jsonString()
+        response.send(accountListJSON)
+        next()
+        return
+    }
+    
+    switch acceptType {
+    case "application/json":
+        let accountListJSON = try accountList.jsonString()
+        response.send(accountListJSON)
+    case "application/octet-stream", "application/x-protobuf", "application/x-google-protobuf":
+        let data = try accountList.serializedData()
+        response.send(data: data)
+    default:
+        let accountListJSON = try accountList.jsonString()
+        response.send(accountListJSON)
+    }
+    
+    next()
+}
+
+router.get("/account/:accountId") {
+    request, response, next in
+    
+    guard let accountId = UInt64(request.parameters["accountId"]!) else {
+        response.send("{\"error\" : \"Invalid id provided.\"}");
+        next()
+        return
+    }
+    
+    guard let account = accountDictionary[accountId] else {
+        response.send("{\"error\" : \"Invalid id provided.\"}");
+        next()
+        return
+    }
+    
+    guard let acceptType = request.headers["Accept"] else {
+        let accountJSON = try account.jsonString()
+        response.send(accountJSON)
+        next()
+        return
+    }
+    
+    switch acceptType {
+    case "application/json":
+        let accountJSON = try account.jsonString()
+        response.send(accountJSON)
+    case "application/octet-stream", "application/x-protobuf", "application/x-google-protobuf":
+        let data = try account.serializedData()
+        response.send(data: data)
+    default:
+        let accountJSON = try account.jsonString()
+        response.send(accountJSON)
+    }
+    
     next()
 }
 

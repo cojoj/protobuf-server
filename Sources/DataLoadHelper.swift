@@ -22,6 +22,12 @@ class DataLoadHelper {
         }
     }
     
+    class func loadAccountList() -> AccountList {
+        var accountList = AccountList()
+        accountList.accounts = DataLoadHelper.loadAccounts()
+        return accountList
+    }
+    
     class func loadAccounts() -> Array<Account> {
         let filename = "accounts"
         var accounts = [Account]()
@@ -66,5 +72,13 @@ class DataLoadHelper {
         }
         
         return transactions
+    }
+    
+    class func mapAccounts(accountList: AccountList) -> Dictionary<UInt64, Account> {
+        var dictionary = Dictionary<UInt64, Account>()
+        for account in accountList.accounts {
+            dictionary[account.id] = account
+        }
+        return dictionary
     }
 }

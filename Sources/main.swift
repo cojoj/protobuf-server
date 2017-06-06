@@ -17,22 +17,26 @@ router.get("/accountList") {
     request, response, next in
     
     guard let acceptType = request.headers["Accept"] else {
-        let accountListJSON = try accountList.jsonString()
-        response.send(accountListJSON)
+        let accountListJSON = try accountList.jsonUTF8Data()
+        response.headers.append("Content-Type", value: "application/json")
+        response.send(data: accountListJSON)
         next()
         return
     }
     
     switch acceptType {
     case "application/json":
-        let accountListJSON = try accountList.jsonString()
-        response.send(accountListJSON)
+        let accountListJSON = try accountList.jsonUTF8Data()
+        response.headers.append("Content-Type", value: acceptType)
+        response.send(data: accountListJSON)
     case "application/octet-stream", "application/x-protobuf", "application/x-google-protobuf":
         let data = try accountList.serializedData()
+        response.headers.append("Content-Type", value: acceptType)
         response.send(data: data)
     default:
-        let accountListJSON = try accountList.jsonString()
-        response.send(accountListJSON)
+        let accountListJSON = try accountList.jsonUTF8Data()
+        response.headers.append("Content-Type", value: acceptType)
+        response.send(data: accountListJSON)
     }
     
     next()
@@ -54,22 +58,22 @@ router.get("/account/:accountId") {
     }
     
     guard let acceptType = request.headers["Accept"] else {
-        let accountJSON = try account.jsonString()
-        response.send(accountJSON)
+        let accountJSON = try account.jsonUTF8Data()
+        response.send(data: accountJSON)
         next()
         return
     }
     
     switch acceptType {
     case "application/json":
-        let accountJSON = try account.jsonString()
-        response.send(accountJSON)
+        let accountJSON = try account.jsonUTF8Data()
+        response.send(data: accountJSON)
     case "application/octet-stream", "application/x-protobuf", "application/x-google-protobuf":
         let data = try account.serializedData()
         response.send(data: data)
     default:
-        let accountJSON = try account.jsonString()
-        response.send(accountJSON)
+        let accountJSON = try account.jsonUTF8Data()
+        response.send(data: accountJSON)
     }
     
     next()
